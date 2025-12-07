@@ -10,7 +10,5 @@ public interface UserService {
 
     UserDTO addNewUser(UserDTO user);
 
-    User findByUsername(String username);
-
 //    UserDTO updateUser(UserDTO user, long id);
 }
