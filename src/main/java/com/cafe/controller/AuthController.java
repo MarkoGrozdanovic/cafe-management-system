@@ -5,6 +5,7 @@ import com.cafe.model.User;
 import com.cafe.model.enums.ROLES;
 import com.cafe.repository.RoleRepository;
 import com.cafe.repository.UserRepository;
+import com.cafe.security.jwt.JwtUtils;
 import com.cafe.security.request.LoginRequest;
 import com.cafe.security.request.SignupRequest;
 import com.cafe.security.response.LoginResponse;
@@ -31,23 +32,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @PostMapping("/public/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
@@ -66,13 +68,16 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        LoginResponse response = new LoginResponse(userDetails.getUsername(),roles);
+        LoginResponse response = new LoginResponse(userDetails.getUsername(), roles, jwtToken);
 
         return ResponseEntity.ok(response);
     }
