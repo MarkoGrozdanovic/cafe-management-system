@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
         ROLES appRole = ROLES.valueOf(roleName);
 
-        Role role = roleRepository.findByRoleName(roleName)
+        Role role = roleRepository.findByRoleName(ROLES.valueOf(roleName))
                 .orElseThrow(() -> new RuntimeException("Role not found"));
     }
 
