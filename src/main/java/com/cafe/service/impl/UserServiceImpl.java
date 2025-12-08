@@ -1,8 +1,10 @@
 package com.cafe.service.impl;
 
 import com.cafe.model.DTO.UserDTO;
+import com.cafe.model.Role;
 import com.cafe.model.User;
 import com.cafe.model.enums.ROLES;
+import com.cafe.repository.RoleRepository;
 import com.cafe.repository.UserRepository;
 import com.cafe.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,6 +21,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public List<User> getAllUsers() {
@@ -31,6 +36,21 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         return modelMapper.map(savedUser, UserDTO.class);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUserName(username).orElseThrow(() -> new RuntimeException("User is not found!"));
+    }
+
+    @Override
+    public void updateUserRole(String username, String roleName) {
+        User user = findByUsername(username);
+
+        ROLES appRole = ROLES.valueOf(roleName);
+
+        Role role = roleRepository.findByRoleName(roleName)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
     }
 
 //    @Override

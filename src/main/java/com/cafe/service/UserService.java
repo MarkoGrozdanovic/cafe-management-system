@@ -10,5 +10,7 @@ public interface UserService {
 
     UserDTO addNewUser(UserDTO user);
 
-//    UserDTO updateUser(UserDTO user, long id);
+    User findByUsername(String username);
+
+    void updateUserRole(String username, String role);
 }
