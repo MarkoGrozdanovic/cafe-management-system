@@ -44,13 +44,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserRole(String username, String roleName) {
-        User user = findByUsername(username);
-
-        ROLES appRole = ROLES.valueOf(roleName);
+    public void updateUserRole(Long id, String roleName) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
 
         Role role = roleRepository.findByRoleName(ROLES.valueOf(roleName))
                 .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        user.setRole(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        userDTO.setRole(String.valueOf(user.getRole().getRoleName()));
+
+        return userDTO;
     }
 
 //    @Override

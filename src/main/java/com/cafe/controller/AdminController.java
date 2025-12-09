@@ -1,11 +1,11 @@
 package com.cafe.controller;
 
+import com.cafe.model.DTO.UserDTO;
 import com.cafe.model.User;
 import com.cafe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +23,15 @@ public class AdminController {
     }
 
     @PutMapping("/updateUserRole")
-    public ResponseEntity<?> updateUserRole(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String role){
-            userService.updateUserRole(userDetails.getUsername(), role);
+    public ResponseEntity<?> updateUserRole(@RequestParam Long id, @RequestParam String role){
+        System.out.println("ID ROLE: "+id + " - "+role);
+            userService.updateUserRole(id, role);
             return ResponseEntity.ok("User role updated!!!");
     }
 
-//            updateUserRole
-//
-//    getUser
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.getUserById(id),
+                HttpStatus.OK);
+    }
 }

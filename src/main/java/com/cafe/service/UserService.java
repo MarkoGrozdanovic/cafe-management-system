@@ -12,5 +12,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void updateUserRole(String username, String role);
+    void updateUserRole(Long id, String role);
+
+    UserDTO getUserById(Long id);
 }
